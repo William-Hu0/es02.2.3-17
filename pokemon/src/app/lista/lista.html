@@ -1,0 +1,8 @@
+<h2>Seleziona una categoria</h2>
+    <div class="list-group">
+      @for (t of pokemonTypes; track t.name) {
+        <a [routerLink]="['/type', t.name]" class="list-group-item list-group-item-action">
+          {{ t.name | uppercase }}
+        </a>
+      }
+    </div>
