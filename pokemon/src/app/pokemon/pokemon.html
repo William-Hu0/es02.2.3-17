@@ -1,1 +1,39 @@
-<p>pokemon works!</p>
+<div class="container">
+  <button type="button" class="btn back-btn" (click)="goBack()">⬅️ Indietro</button>
+  <h2>🐾 Pokémon di tipo {{ tipo }}</h2>
+
+  <div class="card">
+    <button type="button" class="btn" (click)="RequestPokemonByType()">
+      <span class="loading" *ngIf="loading"></span>
+      Carica Pokémon
+    </button>
+
+    @if (loading) {
+      <div class="loading-container">
+        <div class="loading-text">
+          <div class="spinner"></div>
+          Caricamento Pokémon...
+        </div>
+      </div>
+    }
+
+    @if (data != null) {
+      <div class="pokemon-count">
+        Numero totale di Pokémon: {{ data.pokemon.length }}
+      </div>
+
+      <div class="pokemon-list">
+        @for (pokemon of data.pokemon; track pokemon.pokemon.name) {
+          <a class="pokemon-item" [routerLink]="['/descrizione-pokemon', pokemon.pokemon.name]">
+            {{ pokemon.pokemon.name }}
+          </a>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h3>Pronto per esplorare!</h3>
+        <p>Clicca il bottone per vedere tutti i Pokémon di tipo {{ tipo }}</p>
+      </div>
+    }
+  </div>
+</div>

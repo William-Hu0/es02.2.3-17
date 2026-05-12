@@ -1,9 +1,48 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
+import { NomiPokemon } from '../Models/Models';
 
 @Component({
-  selector: 'app-pokemon',
-  imports: [],
+  selector: 'app-nomi-pokemon',
+  imports: [CommonModule, RouterLink],
   templateUrl: './pokemon.html',
   styleUrl: './pokemon.css',
 })
-export class Pokemon {}
+export class NomiPokemonComponent {
+  data!: NomiPokemon;
+  o!: Observable<NomiPokemon>;
+  loading: boolean = false;
+  tipo = '';
+
+  constructor(public http: HttpClient, private route: ActivatedRoute, private location: Location) {
+    this.tipo = this.route.snapshot.params['tipo'];
+    console.log('Tipo ricevuto:', this.tipo);
+  }
+
+  RequestPokemonByType(): void {
+    this.loading = true;
+    console.log('Facendo richiesta per tipo:', this.tipo);
+    this.o = this.http.get<NomiPokemon>(`https://pokeapi.co/api/v2/type/${this.tipo}`);
+    this.o.subscribe({
+      next: this.GetPokemon,
+      error: (err) => {
+        console.error('Errore nella richiesta:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  GetPokemon = (d: NomiPokemon) => {
+    console.log('Dati ricevuti:', d);
+    this.loading = false;
+    this.data = d;
+  };
+
+  goBack(): void {
+    this.location.back();
+  }
+}
